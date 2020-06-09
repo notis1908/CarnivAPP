@@ -13,16 +13,16 @@ import java.util.List;
 public class Supplier extends User {
     private int idRetrievedBasket = -1;
 
-    public Supplier(final String name, final String passwd) {
-        super(name, passwd);
+    public Supplier(final String Name, final String Password) {
+        super(Name, Password);
     }
 
-    public void addProductToBasket(final Basket basket, final Product Product, /*final String Size,*/ final int Amount) throws BasketException {
-        basket.addProducts(Product, /*Size,*/ Amount);
+    public void addProductToBasket(final Basket basket, final Product product, final int Amount) throws BasketException {
+        basket.addProducts(product, Amount);
     }
 
-    public void removeProductFromBasket(final Basket basket, final Product Product, /*final String Size,*/ final int Amount) throws BasketException {
-        basket.removeProducts(Product, /*Size,*/ Amount);
+    public void removeProductFromBasket(final Basket basket, final Product product, final int Amount) throws BasketException {
+        basket.removeProducts(product, Amount);
     }
 
     public int retrievedBasketId() {
@@ -42,17 +42,13 @@ public class Supplier extends User {
         int id = -1;
 
         try {
-            cursor = DataBaseUtils.filterFromTable(connection, "baskets",
-                    new String[]{"basket_id"}, new String[]{String.format("basket_owner='%s'", super.getUserName()),
-                            "AND", "processed='f'"});
-
+            cursor = DataBaseUtils.filterFromTable(connection, "Καλάθια",
+                    new String[]{"Κωδικός Καλθιού"}, new String[]{String.format("Ιδιοκτήτης Καλαθιού='%s'", super.getUserName()), "Και", "Επεξεργάσηκε='f'"});
             while (cursor.getResults().next()) {
                 id = cursor.getResults().getInt(1);
             }
-
             cursor.closeCursor();
             return id;
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,35 +60,23 @@ public class Supplier extends User {
         final String names = basketDetails.get(0);
         final String amounts = basketDetails.get(1);
 
-        DataBaseUtils.insertSpecificIntoTable(connection, "baskets",
-                new String[]{"basket_owner", "products_name", "products_amount"}, new String[]{String.format("'%s'", super.getUserName()),
-                        String.format("'%s'", names), String.format("%s", amounts)});
+        DataBaseUtils.insertSpecificIntoTable(connection, "Καλάθια", new String[]{"Ιδιοκτήτης Καλαθιού", "Ονόματα Προϊόντων", "Ποσότητα Προϊόντων"}, new String[]{String.format("'%s'", super.getUserName()), String.format("'%s'", names), String.format("%s", amounts)});
     }
 
     public Basket restoreBasket(final Connection connection) throws SQLException {
-        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "baskets", new String[]{"products_name", "products_amount"},
-                new String[]{String.format("basket_owner = '%s'", getUserName()), "AND", "processed = FALSE"});
-
+        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Καλάθια", new String[]{"Ονόματα Προϊόντων", "Ποσότητα Προϊόντων"}, new String[]{String.format("Ιδιοκτήτης Καλαθιού = '%s'", getUserName()), "Και", "Επεξεργάστηκε = FALSE"});
         cursor.getResults().next();
         final String productsName = cursor.getResults().getString(1);
-        //final String productsSize = cursor.getResults().getString(2);
         final String productsAmount = cursor.getResults().getString(2);
-
         final Basket restoredBasket = new Basket();
-        restoredBasket.restoreFromDB(productsName, /*productsSize,*/ productsAmount);
+        restoredBasket.restoreFromDB(productsName, productsAmount);
         cursor.closeCursor();
-
         return restoredBasket;
     }
 
     public void completeOrder(final Connection connection, final String address) {
-        DataBaseUtils.insertSpecificIntoTable(connection, "orders", new String[]{"basket_id", "order_owner",
-                "address"}, new String[]{String.valueOf(idRetrievedBasket), String.format("'%s'", super.getUserName()),
-                String.format("'%s'", address)});
-
-        DataBaseUtils.updateTable(connection, "baskets", new String[]{"processed"}, new String[]{"'t'"},
-                new String[]{"processed='f'", "AND", String.format("basket_owner='%s'", super.getUserName()), "AND",
-                        String.format("basket_id=%d", idRetrievedBasket)});
+        DataBaseUtils.insertSpecificIntoTable(connection, "Παραγγελίες", new String[]{"Κωδικός Καλαθιού", "Ιδιοκτήτης Παραγγελίας", "Διεύθυνση"}, new String[]{String.valueOf(idRetrievedBasket), String.format("'%s'", super.getUserName()), String.format("'%s'", address)});
+        DataBaseUtils.updateTable(connection, "Καλάθια", new String[]{"Επεξεργάστηκε"}, new String[]{"'t'"}, new String[]{"Επεξεργάστηκε='f'", "Και", String.format("Ιδιοκτήτης Καλαθιού='%s'", super.getUserName()), "Και", String.format("Κωδικός Καλαθιού=%d", idRetrievedBasket)});
 
     }
 }

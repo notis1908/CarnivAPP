@@ -24,16 +24,14 @@ public class User implements UserInterface {
     @Override
     public DataBaseCursorHolder fetchOrders(final Connection connection, final String[] filterArguments) throws SQLException {
         //Έχει το δικαίωμα ο Χρήστης;
-        DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Χρήστες", new String[]{"Δικαιώματα"},
-                new String[]{String.format("Όνομα Χρήστη = '%s'", UserName)});
+        DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Χρήστες", new String[]{"Δικαιώματα"}, new String[]{String.format("Όνομα Χρήστη = '%s'", UserName)});
         cursor.getResults().next();
 
         final boolean userPrivilege = cursor.getResults().getBoolean(1);
         cursor.closeCursor();
 
         if (userPrivilege) {
-            cursor = DataBaseUtils.innerJoinTables(connection, "Καλάθια", "Παραγγελίες", "Ταυτότητες Καλαθιών",
-                    new String[]{"Ονόματα Προϊόντων", "Ποσότητα Προϊόντων", "Διεύθυνση"}, filterArguments);
+            cursor = DataBaseUtils.innerJoinTables(connection, "Καλάθια", "Παραγγελίες", "Κωδικοί Καλαθιών", new String[]{"Ονόματα Προϊόντων", "Ποσότητα Προϊόντων", "Διεύθυνση"}, filterArguments);
             return cursor;
         } else {
             final List<String> nameAndFilterArguments = new ArrayList<>();
@@ -42,16 +40,14 @@ public class User implements UserInterface {
                 nameAndFilterArguments.add("Και");
             }
             nameAndFilterArguments.addAll(Arrays.asList(filterArguments));
-            cursor = DataBaseUtils.innerJoinTables(connection, "Καλάθια", "Παραγγελίες", "Ταυτότητες Καλαθιών",
-                    new String[]{"Ονόματα Προϊόντων", "Ποσότητα Προϊόντων", "Διεύθυνση"}, nameAndFilterArguments.toArray(new String[0]));
+            cursor = DataBaseUtils.innerJoinTables(connection, "Καλάθια", "Παραγγελίες", "Κωδικοί Καλαθιών", new String[]{"Ονόματα Προϊόντων", "Ποσότητα Προϊόντων", "Διεύθυνση"}, nameAndFilterArguments.toArray(new String[0]));
             return cursor;
         }
     }
 
     @Override
     public DataBaseCursorHolder fetchInventory(final Connection connection, final String[] filterArguments) throws SQLException {
-        return DataBaseUtils.innerJoinTables(connection, "Προϊόντα", "Απόθεμα", "Ταυτότητα Προϊόντος", new String[]{"Ταυτότητα Προϊόντος", "Όνομα Προϊόντος", "Βάρος Προϊόντος", "Τιμή Προϊόντος", "Ποσότητα Προϊόντων"},
-                filterArguments);
+        return DataBaseUtils.innerJoinTables(connection, "Προϊόντα", "Απόθεμα", "Ταυτότητα Προϊόντος", new String[]{"Ταυτότητα Προϊόντος", "Όνομα Προϊόντος", "Βάρος Προϊόντος", "Τιμή Προϊόντος", "Ποσότητα Προϊόντων"}, filterArguments);
     }
 
     public String getUserName() {
