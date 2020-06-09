@@ -19,16 +19,16 @@ import java.util.stream.Collectors;
 
 
 public class TableViewMatchersExtension {
-    public static final int REPLACEMENT_VALUE = -1; //Αντικαθιστά το NULL στη μέθοδο getRowValues.
+    public static final int REPLACEMENT_VALUE = -1; //Αντικαθιστά το NULL στο getRowValues.
 
     private TableViewMatchersExtension() {
     }
 
     @Factory
     public static Matcher<TableView> hasTableCell(final Object value) {
-        String descriptionText = "has table cell \"" + value + "\"";
+        String descriptionText = "Έχει κελί πίνακα \"" + value + "\"";
         return GeneralMatchers.typeSafeMatcher(TableView.class, descriptionText,
-                (tableView) -> toText(tableView) + "\nwhich does not contain a cell with the given value",
+                (tableView) -> toText(tableView) + "\nτο οποίο δεν περιέχει κάποιο κελί με την συγκεκριμένη τιμή",
                 (node) -> hasTableCell(node, value));
     }
 
@@ -40,9 +40,9 @@ public class TableViewMatchersExtension {
 
     @Factory
     public static Matcher<TableView> hasNoTableCell(final Object value) {
-        final String descriptionText = "has no table cell \"" + value + "\"";
+        final String descriptionText = "Δεν έχει κελί πίνακα \"" + value + "\"";
         return GeneralMatchers.typeSafeMatcher(TableView.class, descriptionText,
-                (tableView) -> toText(tableView) + "\nwhich does contain a cell with the given value",
+                (tableView) -> toText(tableView) + "\nτο οποίο περιέχει κάποιο κελί με την συγκεκριμένη τιμή",
                 (node) -> hasNoTableCell(node, value));
     }
 
@@ -54,7 +54,7 @@ public class TableViewMatchersExtension {
 
     @Factory
     public static Matcher<TableView> containsRow(final Object... row) {
-        final String descriptionText = "has row: " + Arrays.toString(row);
+        final String descriptionText = "Έχει γραμμή: " + Arrays.toString(row);
         return GeneralMatchers.typeSafeMatcher(TableView.class, descriptionText, TableViewMatchersExtension::toText, (node) -> containsRow(node, row));
     }
 
@@ -85,7 +85,7 @@ public class TableViewMatchersExtension {
 
     @Factory
     public static Matcher<TableView> hasColumnWithID(final String columnId) {
-        final String descriptionText = "has column title(id): " + columnId;
+        final String descriptionText = "Τίτλος Στήλης Με Κωδικό(id): " + columnId;
         return GeneralMatchers.typeSafeMatcher(TableView.class, descriptionText, (node) -> hasColumnWithID(node, columnId));
     }
 
@@ -98,7 +98,7 @@ public class TableViewMatchersExtension {
 
     @Factory
     public static Matcher<TableView> hasNoColumnWithID(final String columnId) {
-        final String descriptionText = "has column title: " + columnId;
+        final String descriptionText = "Τίτλος Στήλης: " + columnId;
         return GeneralMatchers.typeSafeMatcher(TableView.class, descriptionText, (node) -> hasNoColumnWithID(node, columnId));
     }
 

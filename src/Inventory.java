@@ -9,45 +9,45 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class Inventory implements ProductStorage {
-    private HashMap<Product, Integer> Products;
+    private HashMap<Product, Integer> Product;
     private StringFormatter stringFormatter;
 
     public Inventory() {
-        this.Products = new HashMap<>();
+        this.Product = new HashMap<>();
         this.stringFormatter = () -> {
-            final int productsSize = this.Products.size();
-            final String itemString = productsSize > 1 ? productsSize + " Ξ ΟΞΏΟΟΞ½Ο„Ξ±" : productsSize + " Ξ ΟΞΏΟΟΞ½";
+            final int productsSize = this.Product.size();
+            final String itemString = productsSize > 1 ? productsSize + " προϊόντα" : productsSize + " προϊόν";
             final DecimalFormat total = new DecimalFormat("####0.0");
-            return String.format(" %s, ΟƒΟ…Ξ½ΞΏΞ»ΞΉΞΊΞ® Ο„ΞΉΞΌΞ® Ο„ΞΏΟ… Ξ±Ο€ΞΏΞΈΞ­ΞΌΞ±Ο„ΞΏΟ‚: %s", itemString, total.format(calculateTotal()));
+            return String.format(" Στο απόθεμα υπάρχει %s, συνολικής τιμής: %s", itemString, total.format(calculateTotal()));
         };
     }
 
-    public void addProducts(final Product product, final int amount) throws InventoryException {
-        if (product != null) {
-            final int currentAmount = this.Products.getOrDefault(product, 0);
-            this.Products.put(product, currentAmount + amount);
+    public void addProducts(final Product Product, final int Amount) throws InventoryException {
+        if (Product != null) {
+            final int currentAmount = this.Product.getOrDefault(Product, 0);
+            this.Product.put(Product, currentAmount + Amount);
         } else {
-            throw new InventoryException("Ξ”ΞµΞ½ ΞΌΟ€ΞΏΟΞµΞ―Ο‚ Ξ½Ξ± Ο€ΟΞΏΟƒΞΈΞ­ΟƒΞµΞΉΟ‚ Null Ο€ΟΞΏΟΟΞ½Ο„Ξ± ΟƒΟ„ΞΏ Inventory!");
+            throw new InventoryException("Δεν γίνεται να προσθέσεις NULL αντικείμενα στα προϊόντα");
         }
     }
 
-    public void removeProducts(final Product product, final int amount) throws InventoryException {
-        if (this.Products.get(product) > amount) {
-            this.Products.replace(product, this.Products.get(product) - amount);
-        } else if (this.Products.get(product) == amount) {
-            this.Products.replace(product, 0);
+    public void removeProducts(final Product Product, final int Amount) throws InventoryException {
+        if (this.Product.get(Product) > Amount) {
+            this.Product.replace(Product, this.Product.get(Product) - Amount);
+        } else if (this.Product.get(Product) == Amount) {
+            this.Product.replace(Product, 0);
         } else {
-            throw new InventoryException(String.format("Ξ”ΞµΞ½ Ξ³Ξ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ΄ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® %d ΞΊΞΏΞΌΞΌΞ±Ο„ΞΉΟΞ½" +
-                    " Ξ±Ο†ΞΏΟ Ο…Ο€Ξ¬ΟΟ‡ΞΏΟ…Ξ½ %d ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉΞ±!", amount, this.Products.get(product)));
+            throw new InventoryException(String.format("Δεν γίνεται να αφαιρεθούν %d περιπτώσεις του προϊόντος" +
+                    " καθώς υπάρχουν μόνο %d περιπτώσεις", Amount, this.Product.get(Product)));
         }
     }
 
     public HashMap<Product, Integer> getProducts() {
-        return Products;
+        return Product;
     }
 
     public double calculateTotal() {
-        return this.Products.entrySet().
+        return this.Product.entrySet().
                 parallelStream().
                 mapToDouble(product -> product.getKey().getPrice() * product.getValue()).
                 sum();

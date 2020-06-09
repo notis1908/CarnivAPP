@@ -6,6 +6,7 @@ import CarnivAPP.Order;
 import CarnivAPP.DataBase.DataBaseConnector;
 import CarnivAPP.Users.Client;
 import CarnivAPP.Users.User;
+import CarnivAPP.Chat.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -52,7 +53,7 @@ public class MainScreen extends Application {
         final BorderPane borderPane = new BorderPane();
 
         final Tab loginTab = new Tab();
-        loginTab.setText("Επαλήθευση");
+        loginTab.setText("Σύνδεση");
         final HBox loginBox = new HBox(HBOX_SPACING);
         loginBox.setAlignment(Pos.CENTER);
         loginBox.getChildren().add(LoginButton.createLoginButton(primaryStage, connector.getConnection(), user, shopInventory,
@@ -84,8 +85,7 @@ public class MainScreen extends Application {
 
     @Override
     public void stop() {
-        //Χειρισμός του καλαθιού εδώ μόνο αν δεν είναι άδειο.
-        System.out.println("Caught application closure");
+        System.out.println("Έκλεισε η εφαρμογή");
         if (clientBasket.getProducts().size() > 0) {
             if (((Client) user).retrievedBasketId() < 0) {
                 ((Client) user).saveBasket(connector.getConnection(), clientBasket);

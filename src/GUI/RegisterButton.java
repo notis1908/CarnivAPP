@@ -32,7 +32,7 @@ public class RegisterButton extends ChangeableScene {
     public static Button createRegisterButton(final Stage primaryStage, final Connection connection, final User user, final Inventory shopInventory,
                                            final Basket clientBasket, final List<Order> userOrders, final List<User> userList) {
         final Button btn = new Button();
-        btn.setText("Gain access to the Shop");
+        btn.setText("Αποκτήστε Πρόσβαση Στο Κατάστημα");
 
         btn.setOnAction(mainEvent -> registerAction(primaryStage, connection, user, shopInventory, clientBasket, userOrders, userList));
         return btn;
@@ -50,7 +50,7 @@ public class RegisterButton extends ChangeableScene {
         dialog.initModality(Modality.NONE);
 
         //Σετάρισμα του register button.
-        final ButtonType registerButtonType = new ButtonType("Register", ButtonBar.ButtonData.OK_DONE);
+        final ButtonType registerButtonType = new ButtonType("Εγγραφή", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(registerButtonType, ButtonType.CANCEL);
 
         //Δημιουργία όλων των απαραίτητων πεδίων.
@@ -60,16 +60,16 @@ public class RegisterButton extends ChangeableScene {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         final TextField UserName = new TextField();
-        UserName.setPromptText("e.g. m03j");
-        UserName.setId("user-name");
+        UserName.setPromptText("π.χ. ceiduser");
+        UserName.setId("Όνομα Χρήστη");
 
         final PasswordField UserPassword = new PasswordField();
         UserPassword.setPromptText("xxxx");
-        UserPassword.setId("user-passwd");
+        UserPassword.setId("Κωδικός Χρήστη");
 
-        grid.add(new Label("Username: "), 0, 0);
+        grid.add(new Label("Όνομα Χρήστη: "), 0, 0);
         grid.add(UserName, 1, 0);
-        grid.add(new Label("Password: "), 0, 1);
+        grid.add(new Label("Κωδικός Χρήστη: "), 0, 1);
         grid.add(UserPassword, 1, 1);
 
         //Ενεργοποίηση ή απενεργοποίηση του register button ανάλογα με το αν έχει δοθεί username.
@@ -118,8 +118,8 @@ public class RegisterButton extends ChangeableScene {
     }
 
     private static boolean isUserAllowed(final String UserName, final String UserPassword, final Connection connection) throws SQLException {
-        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Users", new String[]{"user_name"},
-                new String[]{String.format("user_name = '%s'", UserName), "AND", String.format("user_password = '%s'", UserPassword)});
+        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Χρήστες", new String[]{"Όνομα Χρήστη"},
+                new String[]{String.format("Όνομα Χρήστη = '%s'", UserName), "Και", String.format("Κωδικός Χρήστη = '%s'", UserPassword)});
         while (cursor.getResults().next()) {
             if (cursor.getResults().getString(1).equals(UserName)) {
                 cursor.closeCursor();
@@ -133,8 +133,8 @@ public class RegisterButton extends ChangeableScene {
     }
 
     private static boolean isUserAdmin(final String UserName, final String UserPassword, final Connection connection) throws SQLException {
-        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Users", new String[]{"privileges"},
-                new String[]{String.format("user_name = '%s'", UserName), "AND", String.format("user_password = '%s'", UserPassword)});
+        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Χρήστες", new String[]{"Δικαιώματα"},
+                new String[]{String.format("Όνομα Χρήστη = '%s'", UserName), "Και", String.format("Κωδικός Χρήστη = '%s'", UserPassword)});
         cursor.getResults().next();
         if (cursor.getResults().getBoolean(1)) {
             cursor.closeCursor();

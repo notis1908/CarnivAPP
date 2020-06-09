@@ -19,7 +19,7 @@ public class RegisterDao {
         try
         {
             con = DataBaseConnector.createConnection();
-            String query = "Insert Users(SlNo,FullName,Email,UserName,Password) values (NULL,?,?,?,?)";
+            String query = "Εισάγετε Χρήστες(ID Χρήστη, Πλήρες Όνομα, E-mail, Όνομα Χρήστη, Κωδικός Χρήστη) τιμές (NULL,?,?,?,?)";
             preparedStatement = con.prepareStatement(query);
             preparedStatement.setString(1, FullName);
             preparedStatement.setString(2, Email);
@@ -28,13 +28,13 @@ public class RegisterDao {
             
             int i= preparedStatement.executeUpdate();
             
-            if (i!=0)  //Για επιβεβαίωση εισαγωγής των δεδομένων στη βάση δεδομένων.
-            return "Success"; 
+            if (i!=0) //Για επιβεβαίωση εισαγωγής των δεδομένων στη βάση δεδομένων.
+            return "Επιτυχία"; 
         }
         catch(SQLException e)
         {
            e.printStackTrace();
         }       
-        return "Something went wrong!";  //Μήνυμα αποτυχίας.
+        return "Κάτι πήγε στραβά.";  //Μήνυμα αποτυχίας.
     }
 }

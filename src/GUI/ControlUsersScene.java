@@ -27,13 +27,13 @@ import static CarnivAPP.GUI.GuiWindowConsts.WINDOW_HEIGHT;
 import static CarnivAPP.GUI.GuiWindowConsts.WINDOW_WIDTH;
 
 public class ControlUsersScene {
-    private static final String USER_NAME_COLUMN = "User name";
-    private static final String USER_PRIVILEGE_COLUMN = "User privilege";
+    private static final String USER_NAME_COLUMN = "Όνομα Χρήστη";
+    private static final String USER_PRIVILEGE_COLUMN = "Δικαιώματα Χρήστη";
 
     public static VBox createControlTable(final List<User> Users, final Administrator admin, final Connection connection) {
         final ObservableList<User> observableUserList = FXCollections.observableArrayList(Users);
         final TableView<User> userTableView = new TableView<>(observableUserList);
-        userTableView.setId("Users-table");
+        userTableView.setId("Πίνακας Χρηστών");
         userTableView.setPrefWidth(WINDOW_WIDTH);
         userTableView.setPrefHeight(WINDOW_HEIGHT);
 
@@ -48,8 +48,8 @@ public class ControlUsersScene {
         final TableColumn<User, String> userPrivilegeColumn = new TableColumn<>(USER_PRIVILEGE_COLUMN);
         userPrivilegeColumn.setId(USER_PRIVILEGE_COLUMN);
         userPrivilegeColumn.setCellValueFactory(item -> {
-            if (item.getValue() instanceof Administrator) return new SimpleStringProperty("True");
-            else return new SimpleStringProperty("False");
+            if (item.getValue() instanceof Administrator) return new SimpleStringProperty("Σωστό");
+            else return new SimpleStringProperty("Λάθος");
         });
 
         userTableView.getColumns().setAll(userNameColumn, userPrivilegeColumn);
@@ -74,12 +74,12 @@ public class ControlUsersScene {
                 Users.remove(param.getValue());
                 observableUsers.remove(param.getValue());
 
-                //Διαγραφή Χρήστη
+                //Κλήση στη βάση δεδομένων για διαγραφή χρήστη.
                 admin.deleteUser(connection, param.getValue().getUserName());
 
                 Notifications.create()
                         .darkStyle()
-                        .title("Info")
+                        .title("Πληροφορίες")
                         .text(notificationTextSuccess)
                         .position(Pos.CENTER)
                         .owner(Utils.getWindow(editor))
@@ -89,7 +89,7 @@ public class ControlUsersScene {
             } catch (Exception e) {
                 Notifications.create()
                         .darkStyle()
-                        .title("Error")
+                        .title("Σφάλμα")
                         .text(notificationTextError)
                         .position(Pos.CENTER)
                         .owner(Utils.getWindow(editor))
@@ -105,28 +105,28 @@ public class ControlUsersScene {
                                          final Administrator admin, final Connection connection) {
         final HBox addProductBox = new HBox();
         final TextField addUserName = new TextField();
-        addUserName.setPromptText("Εισάγετε UserName");
-        addUserName.setId("user-name");
+        addUserName.setPromptText("Εισάγετε όνομα");
+        addUserName.setId("Όνομα Χρήστη");
         addUserName.setMaxWidth(userNameColumn.getPrefWidth());
 
         final TextField addUserPassword = new TextField();
-        addUserPassword.setPromptText("Εισάγετε Password");
-        addUserPassword.setId("user-password");
+        addUserPassword.setPromptText("Εισάγετε κωδικό");
+        addUserPassword.setId("Κωδικός Χρήστη");
         addUserPassword.setMaxWidth(userNameColumn.getPrefWidth());
 
         final TextField addUserPrivilege = new TextField();
-        addUserPrivilege.setPromptText("Εισάγετε Privileges");
-        addUserPrivilege.setId("user-privilege");
+        addUserPrivilege.setPromptText("Εισάγετε δικαιώματα");
+        addUserPrivilege.setId("Δικαιώματα Χρήστη");
         addUserPrivilege.setMaxWidth(userNameColumn.getPrefWidth());
 
         final CheckBox enablePrivilege = new CheckBox("Διαχειριστής;");
 
-        final Button addNewUserButton = new Button("Προσθήκη Χρήστη");
+        final Button addNewUserButton = new Button("Προσθήκη Νέου Χρήστη");
         addNewUserButton.setOnMouseClicked(mouseEvent -> {
             final String newUserName = addUserName.getText();
             final String newUserPassword = addUserPassword.getText();
             if (!newUserName.isEmpty() && !newUserPassword.isEmpty()) {
-                //Επιβεβαίωση ότι ο Χρήστης δεν υπάρχει στη βάση δεδομένων.
+                //Επιβεβαίωση μη ύπαρξης χρήστη στην βάση δεδομένων.
                 try {
                     final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Users", new String[]{"user_name"},
                             new String[]{String.format("user_name='%s'", newUserName)});
@@ -136,7 +136,7 @@ public class ControlUsersScene {
                         else Users.add(new Client(newUserName, newUserPassword));
                         items.addAll(Users);
 
-                        //Δημιουργία και αποθήκευση νέου Χρήστη.
+                        //Αποθήκευση νέου χρήστη στη βάση δεδομένων.
                         admin.createUser(connection, newUserName, newUserPassword, enablePrivilege.isSelected());
 
                         addUserName.clear();
@@ -147,7 +147,7 @@ public class ControlUsersScene {
                         Notifications.create()
                                 .darkStyle()
                                 .title("Σφάλμα")
-                                .text("Το UserName είναι πιασμένο. Δοκιμάστε κάποιο άλλο.")
+                                .text("Δοκιμάστε νέο όνομα χρήστη καθώς το συγκεκριμένο χρησιμοποιείται.")
                                 .position(Pos.CENTER)
                                 .owner(Utils.getWindow(addProductBox))
                                 .hideAfter(Duration.seconds(2))
@@ -161,7 +161,7 @@ public class ControlUsersScene {
                 Notifications.create()
                         .darkStyle()
                         .title("Σφάλμα")
-                        .text("Κάποιο από τα πεδία είναι κενά. Σιγουρευτείτε ότι έχετε συμπληρώσει σωστά όλα τα πεδία.")
+                        .text("Ένα από τα πεδία είναι κενό. Συμπληρώστε όλες τις απαιτούμενες πληροφορίες.")
                         .position(Pos.CENTER)
                         .owner(Utils.getWindow(addProductBox))
                         .hideAfter(Duration.seconds(2))
@@ -178,8 +178,8 @@ public class ControlUsersScene {
                                             final Administrator admin, final Connection connection) {
         final TableRowExpanderColumn<User> expander = new TableRowExpanderColumn<>(param -> {
             final HBox editor = new HBox(10);
-            editor.getChildren().addAll(createDeleteButton("Διαγραφή Χρήστη", "Ο Χρήστης διαγράφηκε επιτυχώς",
-                    "Κάτι πήγε στραβά κατά την διαγραφή του Χρήστη", Users, observableUsers, editor, param, admin, connection));
+            editor.getChildren().addAll(createDeleteButton("Διαγραφή χρήστη", "Ο χρήστης διαγράφηκε επιτυχώς",
+                    "Κάτι πήγε στραβά κατά τη διάρκεια διαγραφής του χρήστη", Users, observableUsers, editor, param, admin, connection));
             return editor;
         });
         expander.setText("Λεπτομέρειες");

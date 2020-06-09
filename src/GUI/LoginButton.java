@@ -27,30 +27,30 @@ import java.util.List;
 import static CarnivAPP.GUI.SceneHolder.createAdminPaneScene;
 import static CarnivAPP.GUI.SceneHolder.createClientPaneScene;
 
-public class LoginButton extends ChangeableScene {
-
-    public static Button createLoginButton(final Stage primaryStage, final Connection connection, final User user, final Inventory shopInventory,
-                                           final Basket clientBasket, final List<Order> userOrders, final List<User> userList) {
+public class LoginButton extends ChangeableScene
+{
+    public static Button createLoginButton(final Stage primaryStage, final Connection connection, final User user, final Inventory shopInventory, final Basket clientBasket, final List<Order> userOrders, final List<User> userList)
+    {
         final Button btn = new Button();
-        btn.setText("Gain access to the Shop");
+        btn.setText("Αποκτήστε Πρόσβαση Στο Κατάστημα");
 
         btn.setOnAction(mainEvent -> loginAction(primaryStage, connection, user, shopInventory, clientBasket, userOrders, userList));
         return btn;
     }
 
-    private static void loginAction(final Stage primaryStage, final Connection connection, final User user, final Inventory shopInventory,
-                                    final Basket clientBasket, final List<Order> userOrders, final List<User> userList) {
+    private static void loginAction(final Stage primaryStage, final Connection connection, final User user, final Inventory shopInventory, final Basket clientBasket, final List<Order> userOrders, final List<User> userList)
+    {
         final Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Είσοδος");
         alert.setHeaderText("Διάλογος Εισόδου");
 
         final Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Είσοδος στο CarnivAPP");
-        dialog.setContentText("Εισάγετε το UserName και το Password: ");
+        dialog.setContentText("Εισάγετε το Όνομα Χρήστη και τον Κωδικό Χρήστη: ");
         dialog.initModality(Modality.NONE);
 
         //Σετάρισμα του login button.
-        final ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+        final ButtonType loginButtonType = new ButtonType("Είσοδος", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
         //Δημιουργία των απαραίτητων πεδίων.
@@ -60,16 +60,16 @@ public class LoginButton extends ChangeableScene {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         final TextField UserName = new TextField();
-        UserName.setPromptText("e.g. m03j");
-        UserName.setId("user-name");
+        UserName.setPromptText("π.χ. ceiduser");
+        UserName.setId("Όνομα Χρήστη");
 
         final PasswordField UserPassword = new PasswordField();
         UserPassword.setPromptText("xxxx");
-        UserPassword.setId("user-passwd");
+        UserPassword.setId("Κωδικός Χρήστη");
 
-        grid.add(new Label("Username: "), 0, 0);
+        grid.add(new Label("Όνομα Χρήστη: "), 0, 0);
         grid.add(UserName, 1, 0);
-        grid.add(new Label("Password: "), 0, 1);
+        grid.add(new Label("Κωδικός Χρήστη: "), 0, 1);
         grid.add(UserPassword, 1, 1);
 
         //Ενεργοποίηση ή απενεργοποίηση του login button ανάλογα με το αν έχει δοθεί username.
@@ -118,8 +118,8 @@ public class LoginButton extends ChangeableScene {
     }
 
     private static boolean isUserAllowed(final String UserName, final String UserPassword, final Connection connection) throws SQLException {
-        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Users", new String[]{"user_name"},
-                new String[]{String.format("user_name = '%s'", UserName), "AND", String.format("user_password = '%s'", UserPassword)});
+        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Χρήστες", new String[]{"Όνομα Χρήστη"},
+                new String[]{String.format("Όνομα Χρήστη = '%s'", UserName), "Και", String.format("Κωδικός Χρήστη = '%s'", UserPassword)});
         while (cursor.getResults().next()) {
             if (cursor.getResults().getString(1).equals(UserName)) {
                 cursor.closeCursor();
@@ -133,8 +133,8 @@ public class LoginButton extends ChangeableScene {
     }
 
     private static boolean isUserAdmin(final String UserName, final String UserPassword, final Connection connection) throws SQLException {
-        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Users", new String[]{"privileges"},
-                new String[]{String.format("user_name = '%s'", UserName), "AND", String.format("user_password = '%s'", UserPassword)});
+        final DataBaseCursorHolder cursor = DataBaseUtils.filterFromTable(connection, "Χρήστες", new String[]{"Δικαιώματα"},
+                new String[]{String.format("Όνομα Χρήστη = '%s'", UserName), "Και", String.format("Κωδικός Χρήστη = '%s'", UserPassword)});
         cursor.getResults().next();
         if (cursor.getResults().getBoolean(1)) {
             cursor.closeCursor();

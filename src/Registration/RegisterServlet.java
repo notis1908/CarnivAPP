@@ -14,11 +14,11 @@ public class RegisterServlet extends HttpServlet {
      }
  
      protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //Αντιγραφή όλων των παραμέτρων σε τοπικές μεταβλητές.
-         String FullName = request.getParameter("fullname");
-         String Email = request.getParameter("Email");
-         String UserName = request.getParameter("username");
-         String Password = request.getParameter("Password");
+    	 //Αντιγραφή όλων των παραμέτρων σε τοπικές μεταβλητές.
+         String FullName = request.getParameter("Πλήρες Όνομα");
+         String Email = request.getParameter("E-mail");
+         String UserName = request.getParameter("Όνομα Χρήστη");
+         String Password = request.getParameter("Κωδικός Χρήστη");
          
          RegisterBean registerBean = new RegisterBean();
          registerBean.setFullName(FullName);
@@ -31,13 +31,13 @@ public class RegisterServlet extends HttpServlet {
         //Εισαγωγή των στοιχείων του χρήστη στη βάση δεδομένων.
          String userRegistered = registerDao.registerUser(registerBean);
          
-         if(userRegistered.equals("Success"))
+         if(userRegistered.equals("Επιτυχία"))
          {
             request.getRequestDispatcher("/Home.jsp").forward(request, response);
          }
          else
          {
-            request.setAttribute("Error", userRegistered);
+            request.setAttribute("Σφάλμα", userRegistered);
             request.getRequestDispatcher("/Register.jsp").forward(request, response);
          }
      }
